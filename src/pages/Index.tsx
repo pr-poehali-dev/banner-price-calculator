@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
 
 const materials = [
@@ -21,10 +22,15 @@ const Index = () => {
   const [height, setHeight] = useState(2);
   const [quantity, setQuantity] = useState(1);
   const [activeSection, setActiveSection] = useState('calculator');
+  const [withEyelets, setWithEyelets] = useState(false);
 
   const material = materials.find(m => m.id === selectedMaterial);
   const area = width * height;
-  const totalPrice = material ? area * material.price * quantity : 0;
+  const perimeter = 2 * (width + height);
+  const eyeletsCount = Math.ceil(perimeter / 0.2);
+  const eyeletsPrice = withEyelets ? eyeletsCount * 20 : 0;
+  const materialPrice = material ? area * material.price * quantity : 0;
+  const totalPrice = materialPrice + (withEyelets ? eyeletsPrice * quantity : 0);
 
   const portfolioItems = [
     { title: 'Рекламный баннер 6×3м', category: 'Корея', image: '🏢' },
@@ -155,6 +161,31 @@ const Index = () => {
                     className="mt-2 text-lg h-12 border-2 focus:border-primary"
                   />
                 </div>
+
+                <div className="pt-4 border-t border-gray-200">
+                  <Label className="text-lg font-semibold mb-4 block">Дополнительные опции</Label>
+                  <div className="space-y-3">
+                    <label className="flex items-start gap-3 p-4 rounded-xl border-2 border-gray-200 hover:border-primary/50 cursor-pointer transition-all">
+                      <Checkbox
+                        checked={withEyelets}
+                        onCheckedChange={(checked) => setWithEyelets(checked as boolean)}
+                        className="mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold">Люверсы</span>
+                          <span className="text-primary font-bold">20 ₽ за 20 см</span>
+                        </div>
+                        <p className="text-sm text-gray-600">Металлические кольца по периметру для крепления</p>
+                        {withEyelets && (
+                          <p className="text-sm text-accent font-semibold mt-2">
+                            ~{eyeletsCount} шт × 20 ₽ = {eyeletsPrice.toLocaleString('ru-RU')} ₽
+                          </p>
+                        )}
+                      </div>
+                    </label>
+                  </div>
+                </div>
               </div>
             </Card>
 
@@ -178,6 +209,12 @@ const Index = () => {
                     <span className="opacity-90">Количество:</span>
                     <span className="font-bold">{quantity} шт</span>
                   </div>
+                  {withEyelets && (
+                    <div className="flex justify-between items-center text-lg">
+                      <span className="opacity-90">Люверсы:</span>
+                      <span className="font-bold">{(eyeletsPrice * quantity).toLocaleString('ru-RU')} ₽</span>
+                    </div>
+                  )}
                   <div className="h-px bg-white/30 my-4"></div>
                   <div className="flex justify-between items-center text-3xl font-extrabold">
                     <span>Стоимость:</span>
