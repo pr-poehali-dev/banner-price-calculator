@@ -321,7 +321,7 @@ const Index = () => {
             <p className="text-xl text-gray-600">Свяжитесь с нами удобным способом</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
             {[
               { icon: 'Phone', title: 'Телефон', value: '+7 (983) 465-75-56', link: 'tel:+79834657556' },
               { icon: 'Mail', title: 'Email', value: 'printcalc@mail.ru', link: 'mailto:printcalc@mail.ru' },
@@ -341,6 +341,27 @@ const Index = () => {
               </Card>
             ))}
           </div>
+
+          <Card className="max-w-4xl mx-auto p-8 shadow-xl border-0 bg-white/70 backdrop-blur-sm animate-scale-in">
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
+                <Icon name="Building2" size={28} className="text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Реквизиты компании
+                </h3>
+                <div className="space-y-2 text-gray-700">
+                  <p className="text-lg">
+                    <span className="font-semibold">ИП Аленова Клавдия Александровна</span>
+                  </p>
+                  <p className="text-base">
+                    <span className="text-gray-600">ОГРН:</span> <span className="font-mono font-semibold">325385000102143</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
         </section>
       )}
 
