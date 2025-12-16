@@ -281,7 +281,7 @@ const Index = () => {
 
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
-              { icon: 'Phone', title: 'Телефон', value: '+7 (999) 123-45-67', link: 'tel:+79991234567' },
+              { icon: 'Phone', title: 'Телефон', value: '+7 (983) 465-75-56', link: 'tel:+79834657556' },
               { icon: 'Mail', title: 'Email', value: 'info@printcalc.ru', link: 'mailto:info@printcalc.ru' },
               { icon: 'MapPin', title: 'Адрес', value: 'Москва, ул. Примерная, 123', link: '#' },
             ].map((contact, idx) => (
