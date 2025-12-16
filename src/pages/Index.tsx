@@ -48,9 +48,14 @@ const Index = () => {
               <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
                 <Icon name="Printer" size={24} className="text-white" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                PrintCalc
-              </span>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+                  PrintCalc
+                </span>
+                <span className="text-xs text-gray-600 font-medium">
+                  Калькулятор печати баннера
+                </span>
+              </div>
             </div>
             <div className="hidden md:flex gap-6">
               {[
