@@ -23,6 +23,13 @@ const Index = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeSection, setActiveSection] = useState('calculator');
   const [withEyelets, setWithEyelets] = useState(false);
+  const [showOrderForm, setShowOrderForm] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    comment: ''
+  });
 
   const material = materials.find(m => m.id === selectedMaterial);
   const area = width * height;
@@ -227,7 +234,10 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Button className="w-full mt-8 h-14 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-xl transition-all hover:scale-105">
+                <Button 
+                  onClick={() => setShowOrderForm(true)}
+                  className="w-full mt-8 h-14 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-xl transition-all hover:scale-105"
+                >
                   <Icon name="Send" className="mr-2" />
                   Оформить заказ
                 </Button>
@@ -363,6 +373,117 @@ const Index = () => {
             </div>
           </Card>
         </section>
+      )}
+
+      {showOrderForm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl border-0 bg-white animate-scale-in">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-3xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Оформление заказа
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowOrderForm(false)}
+                className="rounded-full hover:bg-gray-100"
+              >
+                <Icon name="X" size={24} />
+              </Button>
+            </div>
+
+            <div className="mb-6 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
+              <h3 className="font-bold text-lg mb-3">Детали заказа:</h3>
+              <div className="space-y-2 text-sm">
+                <p><span className="text-gray-600">Материал:</span> <span className="font-semibold">{material?.name}</span></p>
+                <p><span className="text-gray-600">Размер:</span> <span className="font-semibold">{width} × {height} м ({area.toFixed(2)} м²)</span></p>
+                <p><span className="text-gray-600">Количество:</span> <span className="font-semibold">{quantity} шт</span></p>
+                {withEyelets && <p><span className="text-gray-600">Люверсы:</span> <span className="font-semibold">Да (~{eyeletsCount} шт)</span></p>}
+                <p className="text-lg pt-2 border-t border-gray-200"><span className="text-gray-600">Итого:</span> <span className="font-bold text-primary">{totalPrice.toLocaleString('ru-RU')} ₽</span></p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name" className="text-base font-semibold">Имя *</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Как к вам обращаться?"
+                  value={orderForm.name}
+                  onChange={(e) => setOrderForm({...orderForm, name: e.target.value})}
+                  className="mt-2 h-12 border-2 focus:border-primary"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="phone" className="text-base font-semibold">Телефон *</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+7 (___) ___-__-__"
+                  value={orderForm.phone}
+                  onChange={(e) => setOrderForm({...orderForm, phone: e.target.value})}
+                  className="mt-2 h-12 border-2 focus:border-primary"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="email" className="text-base font-semibold">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={orderForm.email}
+                  onChange={(e) => setOrderForm({...orderForm, email: e.target.value})}
+                  className="mt-2 h-12 border-2 focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="comment" className="text-base font-semibold">Комментарий к заказу</Label>
+                <textarea
+                  id="comment"
+                  placeholder="Дополнительные пожелания, детали..."
+                  value={orderForm.comment}
+                  onChange={(e) => setOrderForm({...orderForm, comment: e.target.value})}
+                  className="w-full mt-2 p-3 border-2 rounded-lg focus:border-primary focus:outline-none resize-none"
+                  rows={4}
+                />
+              </div>
+
+              <Button
+                onClick={() => {
+                  const message = `🎨 Новый заказ на баннер!\n\n` +
+                    `👤 Имя: ${orderForm.name}\n` +
+                    `📞 Телефон: ${orderForm.phone}\n` +
+                    `${orderForm.email ? `📧 Email: ${orderForm.email}\n` : ''}` +
+                    `\n📋 Детали заказа:\n` +
+                    `• Материал: ${material?.name}\n` +
+                    `• Размер: ${width} × ${height} м (${area.toFixed(2)} м²)\n` +
+                    `• Количество: ${quantity} шт\n` +
+                    `${withEyelets ? `• Люверсы: Да (~${eyeletsCount} шт)\n` : ''}` +
+                    `\n💰 Итого: ${totalPrice.toLocaleString('ru-RU')} ₽\n` +
+                    `${orderForm.comment ? `\n💬 Комментарий: ${orderForm.comment}` : ''}`;
+                  
+                  const whatsappUrl = `https://wa.me/79834657556?text=${encodeURIComponent(message)}`;
+                  window.open(whatsappUrl, '_blank');
+                }}
+                disabled={!orderForm.name || !orderForm.phone}
+                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Icon name="MessageCircle" className="mr-2" />
+                Отправить в WhatsApp
+              </Button>
+
+              <p className="text-sm text-gray-600 text-center">
+                Нажимая на кнопку, вы будете перенаправлены в WhatsApp для подтверждения заказа
+              </p>
+            </div>
+          </Card>
+        </div>
       )}
 
       <footer className="bg-white/80 backdrop-blur-lg border-t border-purple-100 mt-20">
