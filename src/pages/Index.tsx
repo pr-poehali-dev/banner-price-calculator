@@ -454,29 +454,76 @@ const Index = () => {
                 />
               </div>
 
-              <Button
-                onClick={() => {
-                  const message = `🎨 Новый заказ на баннер!\n\n` +
-                    `👤 Имя: ${orderForm.name}\n` +
-                    `📞 Телефон: ${orderForm.phone}\n` +
-                    `${orderForm.email ? `📧 Email: ${orderForm.email}\n` : ''}` +
-                    `\n📋 Детали заказа:\n` +
-                    `• Материал: ${material?.name}\n` +
-                    `• Размер: ${width} × ${height} м (${area.toFixed(2)} м²)\n` +
-                    `• Количество: ${quantity} шт\n` +
-                    `${withEyelets ? `• Люверсы: Да (~${eyeletsCount} шт)\n` : ''}` +
-                    `\n💰 Итого: ${totalPrice.toLocaleString('ru-RU')} ₽\n` +
-                    `${orderForm.comment ? `\n💬 Комментарий: ${orderForm.comment}` : ''}`;
-                  
-                  const whatsappUrl = `https://wa.me/79834657556?text=${encodeURIComponent(message)}`;
-                  window.open(whatsappUrl, '_blank');
-                }}
-                disabled={!orderForm.name || !orderForm.phone}
-                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Icon name="MessageCircle" className="mr-2" />
-                Отправить в WhatsApp
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  onClick={async () => {
+                    try {
+                      const orderData = {
+                        name: orderForm.name,
+                        phone: orderForm.phone,
+                        email: orderForm.email,
+                        comment: orderForm.comment,
+                        material: material?.name,
+                        size: `${width} × ${height} м`,
+                        area: area.toFixed(2),
+                        quantity: quantity,
+                        eyelets: withEyelets,
+                        eyelets_count: eyeletsCount,
+                        total_price: totalPrice
+                      };
+
+                      const response = await fetch('https://functions.poehali.dev/453893aa-e591-4e74-961d-956fcaaec4c1', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(orderData)
+                      });
+
+                      if (response.ok) {
+                        alert('✅ Заявка успешно отправлена на email!');
+                        setShowOrderForm(false);
+                        setOrderForm({ name: '', phone: '', email: '', comment: '' });
+                      } else {
+                        const error = await response.json();
+                        alert('⚠️ Ошибка отправки: ' + (error.error || 'Попробуйте позже'));
+                      }
+                    } catch (err) {
+                      alert('⚠️ Ошибка соединения. Попробуйте еще раз.');
+                    }
+                  }}
+                  disabled={!orderForm.name || !orderForm.phone}
+                  className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Icon name="Mail" className="mr-2" />
+                  Отправить на Email
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    const message = `🎨 Новый заказ на баннер!\n\n` +
+                      `👤 Имя: ${orderForm.name}\n` +
+                      `📞 Телефон: ${orderForm.phone}\n` +
+                      `${orderForm.email ? `📧 Email: ${orderForm.email}\n` : ''}` +
+                      `\n📋 Детали заказа:\n` +
+                      `• Материал: ${material?.name}\n` +
+                      `• Размер: ${width} × ${height} м (${area.toFixed(2)} м²)\n` +
+                      `• Количество: ${quantity} шт\n` +
+                      `${withEyelets ? `• Люверсы: Да (~${eyeletsCount} шт)\n` : ''}` +
+                      `\n💰 Итого: ${totalPrice.toLocaleString('ru-RU')} ₽\n` +
+                      `${orderForm.comment ? `\n💬 Комментарий: ${orderForm.comment}` : ''}`;
+                    
+                    const whatsappUrl = `https://wa.me/79834657556?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                  }}
+                  disabled={!orderForm.name || !orderForm.phone}
+                  variant="outline"
+                  className="w-full h-14 text-lg font-bold border-2 border-primary text-primary hover:bg-primary/5 shadow-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Icon name="MessageCircle" className="mr-2" />
+                  Отправить в WhatsApp
+                </Button>
+              </div>
 
               <p className="text-sm text-gray-600 text-center">
                 Нажимая на кнопку, вы будете перенаправлены в WhatsApp для подтверждения заказа

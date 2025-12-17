@@ -56,59 +56,63 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg['To'] = 'printcalc@mail.ru'
     
     # HTML версия письма
+    eyelets_html = f'<p><strong>Люверсы:</strong> Да (~{eyelets_count} шт)</p>' if eyelets else ''
+    email_html = f'<p><strong>Email:</strong> {email}</p>' if email else ''
+    comment_html = f'''<div style="background: white; padding: 20px; border-radius: 8px;">
+            <h3 style="color: #9333ea; margin-top: 0;">Комментарий:</h3>
+            <p>{comment}</p>
+          </div>''' if comment else ''
+    
     html_content = f'''
     <html>
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #f5f3ff 0%, #fce7f3 100%); border-radius: 10px;">
-          <h2 style="color: #9333ea; margin-bottom: 20px;">🎨 Новый заказ на баннер!</h2>
+          <h2 style="color: #9333ea; margin-bottom: 20px;">Новый заказ на баннер!</h2>
           
           <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
-            <h3 style="color: #9333ea; margin-top: 0;">👤 Контактные данные:</h3>
+            <h3 style="color: #9333ea; margin-top: 0;">Контактные данные:</h3>
             <p><strong>Имя:</strong> {name}</p>
             <p><strong>Телефон:</strong> {phone}</p>
-            {f'<p><strong>Email:</strong> {email}</p>' if email else ''}
+            {email_html}
           </div>
           
           <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
-            <h3 style="color: #9333ea; margin-top: 0;">📋 Детали заказа:</h3>
+            <h3 style="color: #9333ea; margin-top: 0;">Детали заказа:</h3>
             <p><strong>Материал:</strong> {material}</p>
             <p><strong>Размер:</strong> {size} ({area} м²)</p>
             <p><strong>Количество:</strong> {quantity} шт</p>
-            {f'<p><strong>Люверсы:</strong> Да (~{eyelets_count} шт)</p>' if eyelets else ''}
+            {eyelets_html}
           </div>
           
           <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
-            <h3 style="color: #9333ea; margin-top: 0;">💰 Стоимость:</h3>
-            <p style="font-size: 24px; font-weight: bold; color: #9333ea; margin: 0;">{total_price:,} ₽</p>
+            <h3 style="color: #9333ea; margin-top: 0;">Стоимость:</h3>
+            <p style="font-size: 24px; font-weight: bold; color: #9333ea; margin: 0;">{total_price:,} руб</p>
           </div>
           
-          {f'''<div style="background: white; padding: 20px; border-radius: 8px;">
-            <h3 style="color: #9333ea; margin-top: 0;">💬 Комментарий:</h3>
-            <p>{comment}</p>
-          </div>''' if comment else ''}
+          {comment_html}
         </div>
       </body>
     </html>
     '''
     
     # Текстовая версия письма (запасная)
+    eyelets_text = f'\nЛюверсы: Да (~{eyelets_count} шт)' if eyelets else ''
+    email_text = f'\nEmail: {email}' if email else ''
+    comment_text = f'\n\nКомментарий: {comment}' if comment else ''
+    
     text_content = f'''
-🎨 Новый заказ на баннер!
+Новый заказ на баннер!
 
-👤 Контактные данные:
+Контактные данные:
 Имя: {name}
-Телефон: {phone}
-{'Email: ' + email if email else ''}
+Телефон: {phone}{email_text}
 
-📋 Детали заказа:
-• Материал: {material}
-• Размер: {size} ({area} м²)
-• Количество: {quantity} шт
-{'• Люверсы: Да (~' + str(eyelets_count) + ' шт)' if eyelets else ''}
+Детали заказа:
+Материал: {material}
+Размер: {size} ({area} м²)
+Количество: {quantity} шт{eyelets_text}
 
-💰 Стоимость: {total_price:,} ₽
-
-{'💬 Комментарий: ' + comment if comment else ''}
+Стоимость: {total_price:,} руб{comment_text}
     '''
     
     part1 = MIMEText(text_content, 'plain', 'utf-8')
