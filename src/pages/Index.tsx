@@ -513,15 +513,15 @@ const Index = () => {
                       `\n💰 Итого: ${totalPrice.toLocaleString('ru-RU')} ₽\n` +
                       `${orderForm.comment ? `\n💬 Комментарий: ${orderForm.comment}` : ''}`;
                     
-                    const whatsappUrl = `https://wa.me/79834657556?text=${encodeURIComponent(message)}`;
-                    window.open(whatsappUrl, '_blank');
+                    const telegramUrl = `https://t.me/+79834657556?text=${encodeURIComponent(message)}`;
+                    window.open(telegramUrl, '_blank');
                   }}
                   disabled={!orderForm.name || !orderForm.phone}
                   variant="outline"
                   className="w-full h-14 text-lg font-bold border-2 border-primary text-primary hover:bg-primary/5 shadow-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Icon name="MessageCircle" className="mr-2" />
-                  Отправить в WhatsApp
+                  <Icon name="Send" className="mr-2" />
+                  Отправить в Telegram
                 </Button>
               </div>
 
